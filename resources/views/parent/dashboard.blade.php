@@ -335,6 +335,7 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">Have suggestions or concerns? Let the management team know.</p>
                     <form method="POST" action="{{ route('parent.feedback.store') }}" class="mt-4 space-y-3">
                         @csrf
+                        <input type="hidden" name="student_id" value="{{ $selectedStudent->id }}">
                         <div class="grid gap-3 md:grid-cols-2">
                             <div>
                                 <label class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Category</label>
