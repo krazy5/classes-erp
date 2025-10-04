@@ -4,6 +4,9 @@
     </x-slot>
 
     <div class="space-y-8 p-6">
+        <div class="flex justify-end">
+            @livewire('student.mark-attendance')
+        </div>
         <section class="rounded-2xl border border-gray-100 bg-white px-6 py-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div class="flex flex-wrap items-center justify-between gap-6">
                 <div>
@@ -52,6 +55,45 @@
             </a>
         </section>
 
+        <section id="attendance-calendar" class="rounded-2xl border border-gray-100 bg-white px-6 py-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Attendance calendar</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $attendanceCalendar['month_name'] }}</p>
+                </div>
+                <span class="text-xs text-gray-400 dark:text-gray-500">Green = present | Red = absent</span>
+            </div>
+            <div class="mt-5 grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $weekday)
+                    <div>{{ $weekday }}</div>
+                @endforeach
+            </div>
+            <div class="mt-2 grid grid-cols-7 gap-2">
+                @foreach ($attendanceCalendar['days'] as $day)
+                    @php
+                        $status = $day['status'];
+                        $inMonth = $day['in_month'];
+                        $dateLabel = $day['date']->format('j');
+                        $classes = 'flex h-16 items-center justify-center rounded-xl border ';
+
+                        if ($status === 'present') {
+                            $classes .= 'border-emerald-200 bg-emerald-100 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200';
+                        } elseif ($status === 'absent') {
+                            $classes .= 'border-rose-200 bg-rose-100 text-rose-700 dark:border-rose-700 dark:bg-rose-900/40 dark:text-rose-200';
+                        } else {
+                            $classes .= 'border-gray-200 bg-gray-100 text-gray-500 dark:border-gray-700 dark:bg-gray-900/60 dark:text-gray-400';
+                        }
+
+                        if (!$inMonth) {
+                            $classes .= ' opacity-40';
+                        }
+                    @endphp
+                    <div class="{{ $classes }}">
+                        <span class="text-sm font-semibold">{{ $dateLabel }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </section>
         <section aria-label="Attendance summary" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Total sessions</p>
@@ -171,3 +213,4 @@
         </section>
     </div>
 </x-app-layout>
+

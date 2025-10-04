@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Admin Dashboard | ' . config('app.name'))
 @section('header', 'Dashboard Overview')
@@ -9,6 +9,7 @@
 
         {{-- Main Content Column --}}
         <div class="space-y-6 lg:col-span-2">
+            <livewire:qr-codes.manage-daily-qr-code />
 
             {{-- Finance Panel (now contains the metric cards) --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -95,7 +96,7 @@
                                 <div>
                                     <p class="font-medium text-slate-900 dark:text-white">{{ $structure->name }}</p>
                                     <p class="text-xs text-slate-500 dark:text-slate-400">
-                                        {{ $structure->classGroup->name ?? 'All Classes' }} · INR {{ number_format($structure->amount, 2) }} · {{ ucfirst(str_replace('_', ' ', $structure->frequency)) }}
+                                        {{ $structure->classGroup->name ?? 'All Classes' }} | INR {{ number_format($structure->amount, 2) }} | {{ ucfirst(str_replace('_', ' ', $structure->frequency)) }}
                                     </p>
                                 </div>
                                 <span class="text-xs text-slate-400 dark:text-slate-500">Updated {{ $structure->updated_at->diffForHumans() }}</span>
@@ -118,7 +119,7 @@
                         <li class="rounded-lg border border-slate-200 px-3 py-2 text-sm dark:border-slate-800">
                             <div class="flex items-center justify-between">
                                 <span class="font-medium text-slate-800 dark:text-slate-100">{{ $followUp->name }}</span>
-                                <span class="text-xs text-indigo-600 dark:text-indigo-300">{{ optional($followUp->follow_up_at)->format('d M · h:i a') }}</span>
+                                <span class="text-xs text-indigo-600 dark:text-indigo-300">{{ optional($followUp->follow_up_at)->format('d M | h:i a') }}</span>
                             </div>
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ $followUp->classGroup->name ?? 'General enquiry' }}</p>
                         </li>
@@ -156,7 +157,7 @@
                                 <span class="text-xs text-slate-500 dark:text-slate-400">{{ $enquiry->created_at->diffForHumans() }}</span>
                             </div>
                             <p class="text-xs text-slate-500 dark:text-slate-400">
-                                {{ $enquiry->classGroup->name ?? 'General' }} · {{ ucfirst($enquiry->status) }}
+                                {{ $enquiry->classGroup->name ?? 'General' }} | {{ ucfirst($enquiry->status) }}
                             </p>
                         </li>
                     @empty
@@ -167,3 +168,4 @@
         </div>
     </div>
 @endsection
+

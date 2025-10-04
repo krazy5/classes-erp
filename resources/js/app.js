@@ -1,4 +1,11 @@
-import "./bootstrap";
+import { Html5Qrcode, Html5QrcodeScanner } from 'html5-qrcode';
+import './bootstrap';
+
+if (typeof window !== 'undefined') {
+    window.Html5Qrcode = Html5Qrcode;
+    window.Html5QrcodeScanner = Html5QrcodeScanner;
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const selects = document.querySelectorAll('select[data-behavior="student-search"]');

@@ -11,6 +11,7 @@
     @endphp
 
     <div class="space-y-10">
+        <livewire:qr-codes.manage-daily-qr-code />
         <section class="space-y-4">
             <div>
                 <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Student & Fee Management</h2>
@@ -289,3 +290,4 @@
         </section>
     </div>
 @endsection
+

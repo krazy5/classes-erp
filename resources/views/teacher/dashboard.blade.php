@@ -4,6 +4,7 @@
     </x-slot>
 
     <div class="space-y-8 p-6">
+        <livewire:qr-codes.manage-daily-qr-code />
         <section class="rounded-2xl border border-gray-100 bg-white px-6 py-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div class="flex flex-wrap items-center justify-between gap-6">
                 <div>
@@ -206,3 +207,4 @@
         @endif
     </div>
 </x-app-layout>
+

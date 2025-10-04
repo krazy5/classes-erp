@@ -5,11 +5,10 @@ namespace App\Support;
 use App\Models\Attendance;
 use App\Models\Student;
 use App\Models\Timetable;
+use Illuminate\Support\Carbon;
+
 class StudentDashboardData
 {
-    /**
-     * Build aggregate data for student-facing dashboards.
-     */
     public static function make(Student $student, ?int $tenantId = null): array
     {
         $classGroup = $student->classGroup;
@@ -57,6 +56,8 @@ class StudentDashboardData
             ->limit(10)
             ->get();
 
+        $calendar = static::buildAttendanceCalendar($student, $tenantId);
+
         return [
             'classGroup' => $classGroup,
             'timetableByDay' => $timetableByDay,
@@ -67,10 +68,45 @@ class StudentDashboardData
                 'percentage' => $attendancePercentage,
             ],
             'recentAttendance' => $recentAttendance,
+            'attendanceCalendar' => $calendar,
+        ];
+    }
+
+    protected static function buildAttendanceCalendar(Student $student, ?int $tenantId = null): array
+    {
+        $today = Carbon::today();
+        $monthStart = $today->copy()->startOfMonth();
+        $monthEnd = $today->copy()->endOfMonth();
+
+        $records = Attendance::query()
+            ->where('student_id', $student->id)
+            ->when($tenantId, fn ($query) => $query->where('tenant_id', $tenantId))
+            ->whereBetween('date', [$monthStart->toDateString(), $monthEnd->toDateString()])
+            ->get()
+            ->keyBy(fn ($attendance) => $attendance->date->toDateString());
+
+        $calendarStart = $monthStart->copy()->startOfWeek(Carbon::MONDAY);
+        $calendarEnd = $monthEnd->copy()->endOfWeek(Carbon::SUNDAY);
+
+        $days = [];
+        $cursor = $calendarStart->copy();
+
+        while ($cursor->lte($calendarEnd)) {
+            $dateKey = $cursor->toDateString();
+            $attendance = $records->get($dateKey);
+
+            $days[] = [
+                'date' => $cursor->copy(),
+                'in_month' => $cursor->isSameMonth($monthStart),
+                'status' => $attendance ? ($attendance->present ? 'present' : 'absent') : null,
+            ];
+
+            $cursor->addDay();
+        }
+
+        return [
+            'month_name' => $monthStart->format('F Y'),
+            'days' => $days,
         ];
     }
 }
-
-
-
-
